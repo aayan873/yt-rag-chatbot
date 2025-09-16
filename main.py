@@ -7,7 +7,7 @@ from langchain_community.vectorstores import FAISS
 from huggingface_hub import InferenceClient
 import openai
 import os
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from collections import OrderedDict
 import os
 import re
@@ -54,12 +54,12 @@ vectorstore_cache = LRUCache(maxsize=50)
 class AskRequest(BaseModel):
     video_id: str
     question: str
-    @validator('video_id')
+    @field_validator('video_id')
     def validate_video_id(cls, v):
         if not re.match(r'^[a-zA-Z0-9_-]{11}$', v):
             raise ValueError('Invalid YouTube video ID format')
         return v
-    @validator('question')
+    @field_validator('question')
     def validate_question(cls, v):
         if not v.strip() or len(v) > 500:
             raise ValueError('Question must be 1-500 characters')
