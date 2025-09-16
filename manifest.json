@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube RAG Chatbot",
+  "version": "1.0",
+  "description": "Chat with YouTube videos using AI-powered RAG chatbot",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "http://localhost:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube RAG Chatbot"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/watch*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
