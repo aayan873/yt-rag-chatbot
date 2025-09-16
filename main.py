@@ -5,7 +5,8 @@ from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from huggingface_hub import InferenceClient
-from openai import OpenAI
+import openai
+import os
 from pydantic import BaseModel, validator
 from collections import OrderedDict
 import os
@@ -24,10 +25,8 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 
 if not HF_TOKEN:
     raise RuntimeError("HF_TOKEN environment variable not set")
-client = OpenAI(
-    base_url="https://router.huggingface.co/v1",
-    api_key=HF_TOKEN
-)
+openai.api_key = HF_TOKEN
+openai.api_base = "https://router.huggingface.co/v1"
 
 hf_client = InferenceClient(
     model="sentence-transformers/all-MiniLM-L6-v2",
@@ -124,9 +123,9 @@ def ask_question(question, vectorstore, k=3):
         {"role": "system", "content": "You answer questions based on the context."},
         {"role": "user", "content": f"Question: {question}\nContext:\n{context}"}
     ]
-    completion = client.chat.completions.create(
-        model="deepseek-ai/DeepSeek-V3.1:together",
-        messages=messages
+    completion = openai.ChatCompletion.create(
+    model="deepseek-ai/DeepSeek-V3.1:together",
+    messages=messages
     )
     answer = completion.choices[0].message.content
     sources = [{"text": d.page_content, "start": d.metadata.get("start"), "end": d.metadata.get("end")} for d in docs]
