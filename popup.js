@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
     try {
-      const response = await fetch('http://localhost:8000/ask', {
+      const response = await fetch('https://yt-rag-chatbot-production.up.railway.app/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ video_id: currentVideoId, question: message }),
